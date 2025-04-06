@@ -1,6 +1,7 @@
 import os
 from telethon import TelegramClient, events
 from dotenv import load_dotenv
+import asyncio
 
 load_dotenv()
 
@@ -11,7 +12,7 @@ bot_token = os.getenv("BOT_TOKEN")
 koyeb_app_name = os.getenv("KOYEB_APP_NAME")
 
 # Initialize the Telegram client (MTProto API)
-client = TelegramClient("bot", api_id, api_hash).start(bot_token=bot_token)
+client = TelegramClient("bot", api_id, api_hash)
 
 # Handler for new messages (forwarded files)
 @client.on(events.NewMessage(incoming=True))
@@ -25,6 +26,11 @@ async def handler(event):
     else:
         await event.reply("📎 Please send a file to get a direct download link.")
 
-# Run the bot to handle incoming events
-client.start()
-client.run_until_disconnected()
+# Running the client asynchronously
+async def main():
+    await client.start(bot_token=bot_token)
+    await client.run_until_disconnected()
+
+# Run the main coroutine to handle events
+if __name__ == "__main__":
+    asyncio.run(main())
