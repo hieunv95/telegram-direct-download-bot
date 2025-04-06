@@ -29,11 +29,6 @@ async def download_file_from_telegram(file_id):
 async def handler(event):
     if event.message.file:
         file_name = event.message.file.name or "file"
-        file_id = event.message.file.id
-
-        # Get the Telegram file through MTProto
-        file = await download_file_from_telegram(file_id)
-
         # Generate the public Koyeb URL for downloading
         download_url = f"https://{koyeb_app_name}.koyeb.app/download/{file_name}"
 

@@ -9,9 +9,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 api_id = int(os.getenv("API_ID"))
-api_hash = os.getenv("API_HASH"))
-bot_token = os.getenv("BOT_TOKEN"))
-koyeb_app_name = os.getenv("KOYEB_APP_NAME"))
+api_hash = os.getenv("API_HASH")
+bot_token = os.getenv("BOT_TOKEN")
+koyeb_app_name = os.getenv("KOYEB_APP_NAME")
 
 # Set up the FastAPI app
 app = FastAPI()
