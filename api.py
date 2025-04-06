@@ -2,7 +2,7 @@ import os
 import logging
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import StreamingResponse
-from telethon.sync import TelegramClient
+from telethon import TelegramClient
 from dotenv import load_dotenv
 import io
 
@@ -36,9 +36,9 @@ async def index(file_id: str = None):
     logger.debug(f"Received request with file_id: {file_id}")
     
     try:
-        # Fetch the file from Telegram using the file_id
+        # Await the file download from Telegram using the file_id
         logger.debug(f"Attempting to download file with ID: {file_id}")
-        file = client.download_media(file_id)
+        file = await client.download_media(file_id)
 
         # Check if the file was successfully downloaded
         if not file:
