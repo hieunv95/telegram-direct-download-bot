@@ -21,7 +21,7 @@ koyeb_app_name = os.getenv("KOYEB_APP_NAME")
 app = FastAPI()
 
 # Initialize Telegram Client (MTProto API)
-client = TelegramClient("bot", api_id, api_hash)
+client = TelegramClient("bot", api_id, api_hash, session="memory")
 
 # Connect the Telegram client
 async def ensure_client_connection():
