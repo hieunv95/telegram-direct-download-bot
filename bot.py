@@ -12,7 +12,7 @@ logging.basicConfig(level=logging.DEBUG)
 # Fetch environment variables
 api_id = int(os.getenv("API_ID"))
 api_hash = os.getenv("API_HASH")
-bot_token = os.getenv("BOT_TOKEN"))
+bot_token = os.getenv("BOT_TOKEN")
 koyeb_app_name = os.getenv("KOYEB_APP_NAME")
 
 # Check if all variables are set
