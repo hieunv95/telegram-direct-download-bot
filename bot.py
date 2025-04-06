@@ -9,7 +9,7 @@ load_dotenv()
 api_id = int(os.getenv("API_ID"))
 api_hash = os.getenv("API_HASH")
 bot_token = os.getenv("BOT_TOKEN")
-koyeb_app_name = os.getenv("KOYEB_APP_NAME")
+koyeb_app_name = os.getenv("KOYEB_WEB_NAME")
 
 # Initialize the Telegram client (MTProto API)
 client = TelegramClient("bot", api_id, api_hash)
