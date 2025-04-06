@@ -1,38 +1,40 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import StreamingResponse
-from telethon import TelegramClient
-import io
 import os
-
-# Load environment variables
+from telethon.sync import TelegramClient
 from dotenv import load_dotenv
+import io
+
 load_dotenv()
 
+# Fetch environment variables
 api_id = int(os.getenv("API_ID"))
 api_hash = os.getenv("API_HASH")
 bot_token = os.getenv("BOT_TOKEN")
-koyeb_app_name = os.getenv("KOYEB_APP_NAME")
 
-# Set up the FastAPI app
 app = FastAPI()
 
-# Create a Telethon client for bot
-client = TelegramClient("bot", api_id, api_hash).start(bot_token=bot_token)
+# Initialize Telegram client (MTProto API)
+client = TelegramClient("bot", api_id, api_hash)
 
-# Function to download file via MTProto (no local saving)
-async def fetch_file(file_id):
-    file = await client.download_media(file_id)
-    return file
+# Connect the client
+client.start(bot_token=bot_token)
 
-@app.get("/download/{filename}")
-async def download_file(filename: str):
-    # Get the Telegram file URL using MTProto
-    file_id = filename  # Here, we would map filename to file_id (you might store this mapping elsewhere)
-    
-    file_content = await fetch_file(file_id)
+# Index route for basic information or welcome page
+@app.get("/")
+async def index():
+    return {"message": "Welcome to the Telegram File Proxy Service. Use the /download/{file_id} endpoint to proxy file downloads from Telegram."}
 
-    if file_content:
-        return StreamingResponse(io.BytesIO(file_content), media_type="application/octet-stream", headers={"Content-Disposition": f"attachment; filename={filename}"})
-    else:
-        raise HTTPException(status_code=404, detail="File not found on Telegram")
+@app.get("/download/{file_id}")
+async def download_file(file_id: str):
+    try:
+        # Download file directly from Telegram servers using MTProto
+        file = client.download_media(file_id)
+
+        # Convert file content to bytes (streaming response)
+        file_bytes = io.BytesIO(file)
+        return StreamingResponse(file_bytes, media_type="application/octet-stream")
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching file: {e}")
 
