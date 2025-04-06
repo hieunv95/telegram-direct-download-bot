@@ -9,8 +9,8 @@ load_dotenv()
 
 # Fetch environment variables
 api_id = int(os.getenv("API_ID"))
-api_hash = os.getenv("API_HASH")
-bot_token = os.getenv("BOT_TOKEN")
+api_hash = os.getenv("API_HASH"))
+bot_token = os.getenv("BOT_TOKEN"))
 
 app = FastAPI()
 
@@ -20,13 +20,9 @@ client = TelegramClient("bot", api_id, api_hash)
 # Connect the client
 client.start(bot_token=bot_token)
 
-# Index route for basic information or welcome page
+# Index route to download file using file_id as query parameter
 @app.get("/")
-async def index():
-    return {"message": "Welcome to the Telegram File Proxy Service. Use the /download/{file_id} endpoint to proxy file downloads from Telegram."}
-
-@app.get("/download/{file_id}")
-async def download_file(file_id: str):
+async def index(file_id: str):
     try:
         # Download file directly from Telegram servers using MTProto
         file = client.download_media(file_id)
@@ -34,7 +30,6 @@ async def download_file(file_id: str):
         # Convert file content to bytes (streaming response)
         file_bytes = io.BytesIO(file)
         return StreamingResponse(file_bytes, media_type="application/octet-stream")
-
+    
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error fetching file: {e}")
-
