@@ -24,7 +24,16 @@ app = FastAPI()
 client = TelegramClient("bot", api_id, api_hash)
 
 # Connect the Telegram client
-client.start(bot_token=bot_token)
+async def ensure_client_connection():
+    if not client.is_connected():
+        logger.debug("Client is disconnected. Attempting to reconnect...")
+        await client.start(bot_token=bot_token)  # Awaited start method
+        logger.debug("Client reconnected successfully.")
+
+# Connect the Telegram client at the beginning of the app
+@app.on_event("startup")
+async def startup():
+    await ensure_client_connection()
 
 @app.get("/")
 async def index(file_id: str = None):
@@ -36,6 +45,9 @@ async def index(file_id: str = None):
     logger.debug(f"Received request with file_id: {file_id}")
     
     try:
+        # Ensure the client is connected before downloading media
+        await ensure_client_connection()
+
         # Await the file download from Telegram using the file_id
         logger.debug(f"Attempting to download file with ID: {file_id}")
         file = await client.download_media(file_id)
