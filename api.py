@@ -5,6 +5,7 @@ from fastapi.responses import StreamingResponse
 from telethon import TelegramClient
 from dotenv import load_dotenv
 import io
+from telethon.sessions import MemorySession 
 
 # Set up logging for debugging
 logging.basicConfig(level=logging.DEBUG)
@@ -21,7 +22,7 @@ koyeb_app_name = os.getenv("KOYEB_APP_NAME")
 app = FastAPI()
 
 # Initialize Telegram Client (MTProto API)
-client = TelegramClient("bot", api_id, api_hash, session="memory")
+client = TelegramClient(MemorySession(), api_id, api_hash)
 
 # Connect the Telegram client
 async def ensure_client_connection():
